@@ -26,7 +26,7 @@ describe('empty spec', () => {
     cy.intercept('POST', 'http://localhost:3001/api/v1/urls', {
       statusCode: 201,
       body: {
-        id: 2,
+        id: 3,
         long_url: "https://images.unsplash.com/photo-1470114716159-e389f8712fda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80", 
         short_url: "http://localhost:3001/useshorturl/2",
         title: "bird"
@@ -38,7 +38,14 @@ describe('empty spec', () => {
     cy.get(':nth-child(2) > h3').contains('bird')
     cy.get(':nth-child(2) > a').contains('http://localhost:3001/useshorturl/2')
     cy.get(':nth-child(2) > p').contains('https://images.unsplash.com/photo-1470114716159-e389f8712fda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80')
-
-
+  })
+  it('should return a message if the server responds with a failed request', () => {
+    cy.intercept('http://localhost:3001/api/v1/urls', {forceNetworkError: true})
+    cy.visit('http://localhost:3000');
+    cy.get('p').contains('Failed to fetch')
+  })
+  it('should return a message if the form is incomplete', () => {
+    cy.get('button').contains('Shorten Please!').click()
+    cy.get('form > p').contains('please fill out both inputs')
   })
 })
