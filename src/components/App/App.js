@@ -8,13 +8,15 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      urls: []
+      urls: [],
+      error: ''
     }
   }
 
   componentDidMount() {
     getUrls()
     .then(data => this.setState({urls: data.urls}))
+    .catch(error => this.setState({error: error}))
   }
   postNewUrl = (input) => {
     fetch('http://localhost:3001/api/v1/urls', {
@@ -26,10 +28,10 @@ export class App extends Component {
     })
     .then(res => res.json())
     .then(data => this.setState({urls: [...this.state.urls, data]}))
+    .catch(error => console.log(error))
   }
 
   render() {
-    console.log(this.state)
     return (
       <main className="App">
         <header>
@@ -37,7 +39,7 @@ export class App extends Component {
           <UrlForm postNewUrl={this.postNewUrl}/>
         </header>
 
-        <UrlContainer urls={this.state.urls}/>
+        <UrlContainer urls={this.state.urls} error={this.state.error}/>
       </main>
     );
   }

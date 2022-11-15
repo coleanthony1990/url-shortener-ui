@@ -6,7 +6,8 @@ class UrlForm extends Component {
     this.props = props;
     this.state = {
       title: '',
-      urlToShorten: ''
+      urlToShorten: '',
+      error: ''
     };
   }
 
@@ -21,7 +22,11 @@ class UrlForm extends Component {
       title: this.state.title
 
     }
+    if (this.state.urlToShorten && this.state.title) {
     this.props.postNewUrl(newData)
+    } else {
+      this.setState({error: 'please fill out both inputs'})
+    }
     this.clearInputs();
   }
 
@@ -51,6 +56,7 @@ class UrlForm extends Component {
         <button onClick={e => this.handleSubmit(e)}>
           Shorten Please!
         </button>
+        {this.state.error && <p>{this.state.error}</p>}
       </form>
     )
   }
